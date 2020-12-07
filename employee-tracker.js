@@ -38,7 +38,7 @@ connection.connect(function(err) {
 // FUNCTIONS
 // ==============================================================================
 
-function runTracker (){
+const runTracker = () => {
   inquirer
     .prompt({
       name:"action",
@@ -54,7 +54,7 @@ function runTracker (){
         "Manage Employee Roles"
       ]
     })
-    .then(function(answer){
+    .then(answer => {
       switch(answer.action){
         case "View All Employees":
           viewEmployees();
@@ -89,8 +89,8 @@ function runTracker (){
 
 
 
-function viewEmployees(){
-  connection.query("select * from employee;", function(err,res){
+const viewEmployees = () => {
+  connection.query("select * from employee;", (err,res) => {
     console.table(res);
     console.log("================================================================================================");
     runTracker();
@@ -98,8 +98,8 @@ function viewEmployees(){
 };
 
 
-function viewRoles(){
-  connection.query("select * from role;", function(err,res){
+const viewRoles = () => {
+  connection.query("select * from role;", (err,res) => {
     if(err) throw err;
     console.table(res);
     console.log("================================================================================================"),
@@ -107,8 +107,8 @@ function viewRoles(){
   });
 };
 
-function viewDepartments() {
-  connection.query("select * from department;", function(err,res){
+const viewDepartments = () => {
+  connection.query("select * from department;", (err,res) => {
     console.table(res);
     console.log("================================================================================================"),
     runTracker()
@@ -116,23 +116,78 @@ function viewDepartments() {
 };
 
 
-function addDepartment(){
+const addDepartment = () => {
   console.log("Add a department.");
-  runTracker();
+  inquirer
+    .prompt({
+      type:'input',
+      name: 'deptName',
+      message: 'Please specify the name of the new department:'
+    })
+    .then(answer =>{
+      console.log(answer.deptName);    
+      connection.query(
+        "INSERT INTO department (name) VALUES (?)", 
+        [answer.deptName],
+        (err,res) => {
+          if(err) throw err;
+          console.log(`"New department ${answer.deptName} has been added."`);
+          console.log("================================================================================================");
+          runTracker();
+        }
+      )
+    });
 };
 
-function addRole(){
-  console.log("Add a role.");
-  runTracker();
+const addRole = () => {
+  console.log("Add a department.");
+  const getDeptList = "SELECT name FROM DEPARTMENT";
+  connection.query(getDeptList, (err,res) => {
+    inquirer
+    .prompt([
+      {
+      type:'input',
+      name: 'roleName',
+      message: 'Please specify the name of the new role:'
+      },
+      {
+        type:'input',
+        name: 'salary',
+        message: 'Please specify the salary for this position:'
+      },
+      {
+        type:'list',
+        name: 'department',
+        message: 'Which department does this role belong to:',
+        choices: res
+      },
+    ])
+    .then(answer =>{
+      console.log(answer.roleName);    
+      connection.query(
+        "INSERT INTO role (title,salary,department_id) VALUES (?,?,(select id from department where name = ?))", 
+        [answer.roleName, answer.salary, answer.department],
+        (err,res) => {
+          if(err) throw err;
+          console.log(`"New role ${answer.roleName} has been added."`);
+          console.log("================================================================================================");
+          runTracker();
+        }
+      )
+    });
+
+
+  })
+  
 };
 
-function addEmployee(){
+const addEmployee = () => {
   console.log("Add an employee.");
   runTracker();
 };
 
 
-function manageRoles(){
+const manageRoles = () => {
   console.log("Manage Roles.");
   runTracker();
 };
