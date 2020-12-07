@@ -39,7 +39,6 @@ connection.connect(function(err) {
 // ==============================================================================
 
 function runTracker (){
-  console.log("it works!");
   inquirer
     .prompt({
       name:"action",
@@ -93,20 +92,27 @@ function runTracker (){
 function viewEmployees(){
   connection.query("select * from employee;", function(err,res){
     console.table(res);
+    console.log("================================================================================================");
+    runTracker();
   });
-  console.log("================================================================================================");
-  runTracker();
 };
 
 
 function viewRoles(){
-  console.log("View all the roles.");
-  runTracker();
+  connection.query("select * from role;", function(err,res){
+    if(err) throw err;
+    console.table(res);
+    console.log("================================================================================================"),
+    runTracker()
+  });
 };
 
 function viewDepartments() {
-  console.log("View all the departments.");
-  runTracker();
+  connection.query("select * from department;", function(err,res){
+    console.table(res);
+    console.log("================================================================================================"),
+    runTracker()
+  })  
 };
 
 
