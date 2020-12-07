@@ -5,6 +5,7 @@
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 const mysql = require("mysql");
+const { title } = require("process");
 
 // ==============================================================================
 // DATABASE CONFIGURATION
@@ -140,7 +141,6 @@ const addDepartment = () => {
 };
 
 const addRole = () => {
-  console.log("Add a department.");
   const getDeptList = "SELECT name FROM DEPARTMENT";
   connection.query(getDeptList, (err,res) => {
     inquirer
@@ -175,19 +175,68 @@ const addRole = () => {
         }
       )
     });
-
-
   })
-  
 };
 
 const addEmployee = () => {
-  console.log("Add an employee.");
-  runTracker();
+  console.log("Please enter the new employee's information.");
+  const getRoleList = "SELECT title FROM ROLE";
+  connection.query(getRoleList, (err,res) => {
+    inquirer
+    .prompt([
+      {
+      type:'input',
+      name: 'firstName',
+      message: 'First Name:'
+      },
+      {
+        type:'input',
+        name: 'lastName',
+        message: 'Last Name:'
+      },
+      {
+        type:'list',
+        name: 'role',
+        message: "Please select the employee's role:",
+        choices: res
+      },
+    ])
+    .then(answer =>{
+      console.log(answer.roleName);    
+    });
+  });
 };
 
 
 const manageRoles = () => {
-  console.log("Manage Roles.");
-  runTracker();
+  const getDeptList = "SELECT title FROM ROLE";
+  connection.query(getDeptList, (err,res) => {
+    inquirer
+    .prompt([
+      {
+      type:'list',
+      name: 'modifyRole',
+      message: 'Which role would like to modify?',
+      choices: [res]
+      },
+      {
+        type:'input',
+        name: 'newRoleName',
+        message: 'Please indicate the new name for this role:'
+      },
+    ])
+    .then(answer =>{
+      console.log(answer.modifyRole);    
+      // connection.query(
+      //   "UPDATE role SET title = ? where title = ?", 
+      //   [answer.newRoleName, answer.modifyRole],
+      //   (err,res) => {
+      //     if(err) throw err;
+      //     console.log(`"Role ${answer.modifyRole} has been updated to ${answer.newRoleName}."`);
+      //     console.log("================================================================================================");
+      //     runTracker();
+      //   }
+      // )
+    });
+  })
 };
