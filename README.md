@@ -10,7 +10,7 @@ The purpose of this exercise is to allow the user to view and add departments, r
 
 A demo of the live application can be found below:
 
-
+![demo](./assets/employee-tracker-demo.gif)
 
 ---
 ## Usage

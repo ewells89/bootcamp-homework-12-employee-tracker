@@ -180,8 +180,9 @@ const addRole = () => {
 
 const addEmployee = () => {
   console.log("Please enter the new employee's information.");
-  const getRoleList = "SELECT title FROM ROLE";
+  let getRoleList = "SELECT title FROM role";
   connection.query(getRoleList, (err,res) => {
+    // console.log(res);
     inquirer
     .prompt([
       {
